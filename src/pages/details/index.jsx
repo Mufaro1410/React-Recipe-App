@@ -5,7 +5,12 @@ import { GlobalContext } from "../../context";
 export default function Details() {
   const { id } = useParams();
 
-  const { recipeDetailsData, setRecipeDetailsData } = useContext(GlobalContext);
+  const {
+    recipeDetailsData,
+    setRecipeDetailsData,
+    handleAddToFavourite,
+    favouritesList,
+  } = useContext(GlobalContext);
 
   useEffect(() => {
     async function getRecipeDetails() {
@@ -41,8 +46,15 @@ export default function Details() {
           {recipeDetailsData?.recipe?.title}
         </h3>
         <div>
-          <button className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inline-block shadow-md bg-black text-white">
-            Save as favourites
+          <button
+            onClick={() => handleAddToFavourite(recipeDetailsData?.recipe)}
+            className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inline-block shadow-md bg-black text-white"
+          >
+            {favouritesList && favouritesList.length > 0 && favouritesList.findIndex(
+              (item) => item.id === recipeDetailsData?.recipe?.id
+            ) !== -1
+              ? "Remove from favourites"
+              : "Add to favourites"}
           </button>
         </div>
         <div>
@@ -54,8 +66,10 @@ export default function Details() {
               <li key={recipeDetailsData?.recipe?.id}>
                 <span className="text-2xl font-semibold text-black">
                   {ingredient.quantity} {ingredient.unit}
-                </span >
-                <span className="text-2xl font-semibold text-black">{ingredient.description}</span>
+                </span>
+                <span className="text-2xl font-semibold text-black">
+                  {ingredient.description}
+                </span>
               </li>
             ))}
           </ul>
